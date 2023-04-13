@@ -40,17 +40,19 @@ st.subheader(body="Preview Data")
 st.write(data.tail())
 # print(data.dtypes)
 
-st.subheader(body=f"Visualize Close Price of {stock}")
+st.write(f""" ### Visualize Close Price of {stock} """)
 
 
-def plot_raw_data():
-    fig = go.Figure()
-    fig.add_trace(go.Line(x=data["Date"], y=data["Close"], name="close_price"))
-    fig.layout.update(xaxis_rangeslider_visible=True)
-    st.plotly_chart(fig)
+# def plot_raw_data():
+#     fig = go.Figure()
+#     fig.add_trace(go.Line(x=data["Date"], y=data["Close"], name="close_price"))
+#     fig.layout.update(xaxis_rangeslider_visible=True)
+#     st.plotly_chart(fig)
 
 
-plot_raw_data()
+# plot_raw_data()
+
+st.line_chart(data=data.Close)
 
 #### Forecast time series data ####
 data["Date"] = data["Date"].dt.date
@@ -63,15 +65,15 @@ m.fit(train_data)
 future = m.make_future_dataframe(periods=period)
 forecast = m.predict(future)
 
-st.subheader(f"Forecast Data for {period} days")
+st.write(f""" ### Forecast Data for {period} days """)
 st.write(forecast.tail(period))
 
-st.subheader(body=f"Visualize Future Stock Price of {stock}")
+st.write(f""" ### Visualize Future Stock Price of {stock} """)
 forecast_fig = plot_plotly(
     m=m, fcst=forecast, figsize=(720, 500), xlabel="Date", ylabel="Close Price in USD"
 )
 st.plotly_chart(forecast_fig)
 
-st.subheader(body="Visualize Components")
+st.subheader(body="Component Plots")
 comp_fig = m.plot_components(forecast)
 st.pyplot(comp_fig)
